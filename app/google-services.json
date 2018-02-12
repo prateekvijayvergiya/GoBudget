@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "432550755950",
+    "firebase_url": "https://gobudget-9c815.firebaseio.com",
+    "project_id": "gobudget-9c815",
+    "storage_bucket": "gobudget-9c815.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:432550755950:android:38fc39deaa4dbc30",
+        "android_client_info": {
+          "package_name": "com.madprateek.gobudget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "432550755950-gc9stlu7v8osi6hi1mmvgpekpjg9hr46.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.madprateek.gobudget",
+            "certificate_hash": "f4270bf9e0f800a8bf4533dca820084c0b913b0a"
+          }
+        },
+        {
+          "client_id": "432550755950-irtaq6dic0tmj47rsqolsj4fqgjtfalc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3hERETZKKc_fdTtxsWRZuubpJ09FN1tw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "432550755950-irtaq6dic0tmj47rsqolsj4fqgjtfalc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
