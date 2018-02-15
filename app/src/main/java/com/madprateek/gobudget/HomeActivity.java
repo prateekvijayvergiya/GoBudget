@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -21,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Toolbar mToolbar;
     private FirebaseAuth mAuth;
+    private ImageView mSetBudget;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,8 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.homeAppBar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("GoBudget");
+
+
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);

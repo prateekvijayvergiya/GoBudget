@@ -18,6 +18,10 @@
             android:layout_height="?attr/actionBarSize"
             />
 
+        <include
+            layout="@layout/content_home"/>
     </android.support.design.widget.AppBarLayout>
+
+
 
 </RelativeLayout>
