@@ -73,6 +73,10 @@ public class HomeActivity extends AppCompatActivity {
         if (mToogle.onOptionsItemSelected(item)){
             return  true;
         }
+
+        else if (item.getItemId() == R.id.menuAddIcon){
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
