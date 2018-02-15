@@ -8,7 +8,8 @@
             android:icon="@drawable/profile_icon"/>
 
         <item android:title="Sign Out"
-            android:icon="@drawable/logout"/>
+            android:icon="@drawable/logout"
+            android:id="@+id/navSignOutBtn"/>
 
     </group>
 

@@ -1,18 +1,26 @@
 package com.madprateek.gobudget;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToogle;
+    private NavigationView navigationView;
     private Toolbar mToolbar;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +36,36 @@ public class HomeActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mToogle);
         mToogle.syncState();
 
+        mAuth = FirebaseAuth.getInstance();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setNavDrawer();
+    }
+
+    private void setNavDrawer() {
+
+        navigationView = (NavigationView) findViewById(R.id.navView);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+
+                mDrawerLayout.closeDrawers();
+
+                switch (item.getItemId()){
+
+                    case R.id.navSignOutBtn:
+                        mAuth.signOut();
+                        startActivity(new Intent(HomeActivity.this,MainActivity.class));
+                        finish();
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -39,4 +75,12 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
 }
