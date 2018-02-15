@@ -27,13 +27,15 @@
                     android:text="Rs. 750"
                     android:textSize="40dp" />
 
-                <Image
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/add_budget_icon"
                     android:background="#E1BEE7"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="60dp"
+                    android:clickable="true"
+                    android:contextClickable="true"
                     android:id="@+id/setBudgetBtn"/>
             </LinearLayout>
 
