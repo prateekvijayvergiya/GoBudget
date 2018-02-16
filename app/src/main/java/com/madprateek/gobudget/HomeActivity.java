@@ -1,19 +1,34 @@
 package com.madprateek.gobudget;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -24,6 +39,10 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private FirebaseAuth mAuth;
     private ImageView mSetBudget;
+    private DatabaseReference budgetDatabase;
+    private ProgressDialog mProgressDialog;
+    private TextView mbudgetText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +53,9 @@ public class HomeActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("GoBudget");
 
         mSetBudget = (ImageView) findViewById(R.id.setBudgetBtn);
+        mProgressDialog = new ProgressDialog(HomeActivity.this);
+        mbudgetText = (TextView) findViewById(R.id.budgetText);
+
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
@@ -47,13 +69,80 @@ public class HomeActivity extends AppCompatActivity {
 
         setNavDrawer();
 
+
         mSetBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                setBudget();
+                //updateText();
             }
         });
     }
+
+
+
+    private void setBudget() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.custom_dialog,null);
+
+        builder.setCancelable(true);
+        builder.setView(dialogView);
+        Button setBudget = (Button) dialogView.findViewById(R.id.setBudget);
+        final EditText budgetText = (EditText) dialogView.findViewById(R.id.dialogEditText);
+
+        final AlertDialog dialog = builder.create();
+        setBudget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String budget = budgetText.getText().toString();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                String uid = currentUser.getUid();
+
+                mProgressDialog.setTitle("Setting Up Budget");
+                mProgressDialog.setMessage("Please Wait");
+                mProgressDialog.setCanceledOnTouchOutside(false);
+                mProgressDialog.show();
+                budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Budget");
+                budgetDatabase.setValue(budget).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()){
+
+                            dialog.cancel();
+                            mProgressDialog.dismiss();
+                            Toast.makeText(HomeActivity.this,"Budget added Successfully",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+        dialog.show();
+    }
+
+
+   private void updateText() {
+
+       FirebaseUser currentUser = mAuth.getCurrentUser();
+       final String uid = currentUser.getUid();
+        budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String text = dataSnapshot.child("Budget").getValue().toString();
+                mbudgetText.setText(text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void setNavDrawer() {
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Your Budget"
+        android:textSize="20dp"
+        android:id="@+id/dialogText"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogText"
+        android:hint="Budget"
+        android:inputType="number"
+        android:id="@+id/dialogEditText"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/setBudget"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center|center_horizontal"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="Set" />
+</RelativeLayout>
