@@ -3,4 +3,14 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    
+    <string-array name="content_array">
+        <item>Food</item>
+        <item>Grocery</item>
+        <item>Transportation</item>
+        <item>Fuel</item>
+        <item>Household</item>
+        <item>Clothing</item>
+        <item>Others</item>
+    </string-array>
 </resources>

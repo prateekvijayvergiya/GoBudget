@@ -10,13 +10,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +42,10 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private FirebaseAuth mAuth;
     private ImageView mSetBudget;
-    private DatabaseReference budgetDatabase;
+    private DatabaseReference budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgressDialog;
     private TextView mbudgetText;
+    private Spinner mContentSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +59,13 @@ public class HomeActivity extends AppCompatActivity {
         mSetBudget = (ImageView) findViewById(R.id.setBudgetBtn);
         mProgressDialog = new ProgressDialog(HomeActivity.this);
         mbudgetText = (TextView) findViewById(R.id.budgetText);
+        mContentSpinner = findViewById(R.id.contentSpinner);
+        //mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
 
         mDrawerLayout.addDrawerListener(mToogle);
         mToogle.syncState();
@@ -75,11 +82,19 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 setBudget();
-                //updateText();
             }
         });
+
+
     }
 
+    public Spinner initSpinner(Spinner mContentSpinner, int content_array) {
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,content_array,R.layout.spinner_style);
+        adapter.setDropDownViewResource(R.layout.spinner_style);
+        mContentSpinner.setAdapter(adapter);
+        return mContentSpinner;
+    }
 
 
     private void setBudget() {
@@ -115,6 +130,7 @@ public class HomeActivity extends AppCompatActivity {
                             dialog.cancel();
                             mProgressDialog.dismiss();
                             Toast.makeText(HomeActivity.this,"Budget added Successfully",Toast.LENGTH_SHORT).show();
+                            //updateText();
                         }
                     }
                 });
@@ -133,15 +149,19 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 String text = dataSnapshot.child("Budget").getValue().toString();
-                mbudgetText.setText(text);
+                if (text!=null)
+                    mbudgetText.setText(text);
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+                String db = databaseError.getMessage();
+                Log.d("database error",db);
             }
         });
-    }
+   }
 
 
     private void setNavDrawer() {
@@ -176,6 +196,16 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         else if (item.getItemId() == R.id.menuAddIcon){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.custom_transaction_dialog,null);
+
+            builder.setCancelable(true);
+            builder.setView(dialogView);
+
+            final AlertDialog dialog = builder.create();
+            dialog.show();
 
         }
         return super.onOptionsItemSelected(item);
