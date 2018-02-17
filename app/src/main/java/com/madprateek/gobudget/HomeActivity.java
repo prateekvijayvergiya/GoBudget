@@ -183,6 +183,13 @@ public class HomeActivity extends AppCompatActivity {
                         mAuth.signOut();
                         startActivity(new Intent(HomeActivity.this,MainActivity.class));
                         finish();
+                        break;
+
+                    case R.id.navViewprofile:
+                        startActivity(new Intent(HomeActivity.this,UpdateProfile.class));
+                        finish();
+                        break;
+
                 }
                 return true;
             }
