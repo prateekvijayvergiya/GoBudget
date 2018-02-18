@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView mSetBudget;
     private DatabaseReference budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgressDialog;
-    private TextView mbudgetText;
+    private TextView mbudgetText,mNavEmail,mNavName;
     private Spinner mContentSpinner;
 
     @Override
@@ -59,6 +59,8 @@ public class HomeActivity extends AppCompatActivity {
         mSetBudget = (ImageView) findViewById(R.id.setBudgetBtn);
         mProgressDialog = new ProgressDialog(HomeActivity.this);
         mbudgetText = (TextView) findViewById(R.id.budgetText);
+        mNavEmail = (TextView) findViewById(R.id.navEmail);
+        mNavName = (TextView) findViewById(R.id.navName);
         mContentSpinner = findViewById(R.id.contentSpinner);
         //mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
 
@@ -130,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
                             dialog.cancel();
                             mProgressDialog.dismiss();
                             Toast.makeText(HomeActivity.this,"Budget added Successfully",Toast.LENGTH_SHORT).show();
-                            //updateText();
+                            updateText();
                         }
                     }
                 });
@@ -143,7 +145,8 @@ public class HomeActivity extends AppCompatActivity {
    private void updateText() {
 
        FirebaseUser currentUser = mAuth.getCurrentUser();
-       final String uid = currentUser.getUid();
+       String uid = currentUser.getUid();
+       budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
         budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

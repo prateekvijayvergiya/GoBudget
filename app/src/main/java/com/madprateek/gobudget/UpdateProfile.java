@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,7 @@ public class UpdateProfile extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private Button mUpdateBtn;
+    private TextView mNavEmail,mNavName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,8 @@ public class UpdateProfile extends AppCompatActivity {
 
         mName = (EditText) findViewById(R.id.FnameValue);
         mEmail = (EditText) findViewById(R.id.emailValue);
+        mNavEmail = (TextView) findViewById(R.id.navEmail);
+        mNavName = (TextView) findViewById(R.id.navName);
         mUpdateBtn = (Button) findViewById(R.id.updateBtn);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -87,6 +91,10 @@ public class UpdateProfile extends AppCompatActivity {
                     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(uid);
 
                     String name = mName.getText().toString();
+                    String email = mEmail.getText().toString();
+
+                    mNavEmail.setText(email);
+                    mNavName.setText(name);
                     Map info = new HashMap();
                     info.put("name",name);
                     mDatabase.updateChildren(info, new DatabaseReference.CompletionListener() {
