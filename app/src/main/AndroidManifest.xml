@@ -22,8 +22,10 @@
             android:name=".SignUpActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".UpdateProfile"></activity>
+        <activity android:name=".SignInActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".UpdateProfile"
+           android:parentActivityName=".HomeActivity"></activity>
     </application>
 
 </manifest>
