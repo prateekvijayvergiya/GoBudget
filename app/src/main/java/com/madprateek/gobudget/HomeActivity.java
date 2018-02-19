@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
         mbudgetText = (TextView) findViewById(R.id.budgetText);
         mNavEmail = (TextView) findViewById(R.id.navEmail);
         mNavName = (TextView) findViewById(R.id.navName);
-        mContentSpinner = findViewById(R.id.contentSpinner);
+        mContentSpinner = (Spinner) findViewById(R.id.contentSpinner);
         //mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
 
 
@@ -88,14 +88,15 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+
     }
 
-    public Spinner initSpinner(Spinner mContentSpinner, int content_array) {
+    public Spinner initSpinner(Spinner s, int content_array) {
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,content_array,R.layout.spinner_style);
         adapter.setDropDownViewResource(R.layout.spinner_style);
-        mContentSpinner.setAdapter(adapter);
-        return mContentSpinner;
+        s.setAdapter(adapter);
+        return s;
     }
 
 
@@ -153,7 +154,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 String text = dataSnapshot.child("Budget").getValue().toString();
                 if (text!=null)
-                    mbudgetText.setText(text);
+                    mbudgetText.setText("Rs. " + text);
 
             }
 
