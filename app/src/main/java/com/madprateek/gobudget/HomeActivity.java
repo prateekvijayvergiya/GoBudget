@@ -63,8 +63,6 @@ public class HomeActivity extends AppCompatActivity {
         mNavEmail = (TextView) findViewById(R.id.navEmail);
         mNavName = (TextView) findViewById(R.id.navName);
         mContentSpinner = (Spinner) findViewById(R.id.contentSpinner);
-        //mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
-
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,
@@ -222,6 +220,8 @@ public class HomeActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.custom_transaction_dialog,null);
+            mContentSpinner = dialogView.findViewById(R.id.contentSpinner);
+            mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
 
             builder.setCancelable(true);
             builder.setView(dialogView);
