@@ -48,6 +48,7 @@
                 android:id="@+id/expenseText"
                 android:text="Recent Expenses"
                 android:layout_marginTop="10dp"
+                android:textStyle="bold"
                 android:layout_below="@+id/contentHead"/>
 
             <android.support.v7.widget.RecyclerView
