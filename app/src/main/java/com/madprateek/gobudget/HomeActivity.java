@@ -115,6 +115,30 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+
+        String uid = mAuth.getCurrentUser().getUid();
+        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String text = dataSnapshot.child("Budget").getValue().toString();
+                if (text!=null)
+                    mbudgetText.setText("Rs. " + text);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+                String db = databaseError.getMessage();
+                Log.d("database error",db);
+            }
+        });
+        super.onStart();
+    }
 
     // For Setting the Budget Method
     private void setBudget() {
