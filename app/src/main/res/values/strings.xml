@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string-array name="content_array">
+        <item> </item>
         <item>Food</item>
         <item>Grocery</item>
         <item>Transportation</item>

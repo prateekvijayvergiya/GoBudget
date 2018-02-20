@@ -34,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -42,7 +44,10 @@ public class HomeActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Toolbar mToolbar;
     private FirebaseAuth mAuth;
+    private String content;
+    private Button mAddTransactionBtn;
     private ImageView mSetBudget;
+    private EditText mRemarksText,mAmountText;
     private DatabaseReference budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgressDialog;
     private TextView mbudgetText,mNavEmail,mNavName;
@@ -60,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         mSetBudget = (ImageView) findViewById(R.id.setBudgetBtn);
         mProgressDialog = new ProgressDialog(HomeActivity.this);
         mbudgetText = (TextView) findViewById(R.id.budgetText);
+
         mNavEmail = (TextView) findViewById(R.id.navEmail);
         mNavName = (TextView) findViewById(R.id.navName);
         mContentSpinner = (Spinner) findViewById(R.id.contentSpinner);
@@ -90,6 +96,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    // Start Spinner Method
     public Spinner initSpinner(Spinner s, int content_array) {
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,content_array,R.layout.spinner_style);
@@ -109,6 +116,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    // For Setting the Budget Method
     private void setBudget() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
@@ -152,6 +160,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    // Update Text Method
    private void updateText() {
 
        FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -176,7 +185,7 @@ public class HomeActivity extends AppCompatActivity {
         });
    }
 
-
+    //Set Drawer Method
     private void setNavDrawer() {
 
         navigationView = (NavigationView) findViewById(R.id.navView);
@@ -209,6 +218,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    // For selecting the options from app bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mToogle.onOptionsItemSelected(item)){
@@ -223,14 +233,74 @@ public class HomeActivity extends AppCompatActivity {
             mContentSpinner = dialogView.findViewById(R.id.contentSpinner);
             mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
 
+           /* mContentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    content = parent.getItemAtPosition(position).toString();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });*/
+
             builder.setCancelable(true);
             builder.setView(dialogView);
 
             final AlertDialog dialog = builder.create();
             dialog.show();
 
+
+          /*  mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
+            mAddTransactionBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    setDetails();
+
+                }
+            });*/
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    // for setting the budget contents
+    private void setDetails() {
+
+
+        mProgressDialog.setTitle("Setting Up Details");
+        mProgressDialog.setMessage("Please Wait");
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.show();
+
+
+
+        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mRemarksText =(EditText) findViewById(R.id.remarksText);
+        mAmountText = (EditText) findViewById(R.id.amountText);
+
+
+        String uid = mAuth.getCurrentUser().getUid();
+        String amount = mAmountText.getText().toString();
+        String remarks = mRemarksText.getText().toString();
+
+        HashMap<String,String> contentDetails = new HashMap<String, String>();
+        contentDetails.put("Amount",amount);
+        contentDetails.put("Remarks",remarks);
+        budgetDatabase.child(uid).child("Contents").child(content).setValue(contentDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()){
+                    mProgressDialog.dismiss();
+                }
+            }
+        });
     }
 
     @Override

@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/transactionText"
         android:hint="Amount"
+        android:inputType="number"
         android:layout_margin="10dp"
         android:id="@+id/amountText"/>
 
@@ -30,22 +31,33 @@
         android:layout_margin="10dp"
         android:id="@+id/remarksText"/>
 
-    <EditText
+   <!-- <EditText
         android:id="@+id/contentText"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/remarksText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text=" f" />
+        android:text=" f" />-->
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/contentText"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/transactionText"
+        android:layout_below="@+id/remarksText"
+        android:layout_centerHorizontal="true"
         android:spinnerMode="dropdown"
         android:id="@+id/contentSpinner">
     </Spinner>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:layout_below="@+id/contentSpinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/colorAccent"
+        android:id="@+id/transactionAddBtn"
+        android:background="@drawable/rounded_border"/>
 </RelativeLayout>
