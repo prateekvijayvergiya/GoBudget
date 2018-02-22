@@ -10,12 +10,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private TextView mbudgetText,mNavEmail,mNavName;
     private Spinner mContentSpinner;
+    DatabaseReference contentDatabase = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
         mSetBudget = (ImageView) findViewById(R.id.setBudgetBtn);
         mProgressDialog = new ProgressDialog(HomeActivity.this);
         mbudgetText = (TextView) findViewById(R.id.budgetText);
+        mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
 
         mNavEmail = (TextView) findViewById(R.id.navEmail);
         mNavName = (TextView) findViewById(R.id.navName);
@@ -93,8 +98,90 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+        getDetails();
 
     }
+
+    // To set the details by firebase recycler adapter
+    private void getDetails() {
+
+        FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,contentDatabase) {
+            @Override
+            protected void populateViewHolder(ContentViewHolder viewHolder, Details model, int position) {
+
+                String uid = mAuth.getCurrentUser().getUid();
+                contentDatabase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        String content = dataSnapshot.child("Contents").getValue().toString();
+                        String money = dataSnapshot.child("Contents").child("Amount").getValue().toString();
+                        if (content != null){
+                            ContentViewHolder.setContent(content);
+                        }
+
+                        ContentViewHolder.setAmount(money);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+        };
+    }
+
+    public static class ContentViewHolder extends RecyclerView.ViewHolder {
+
+        static View view;
+        public ContentViewHolder(View itemView) {
+            super(itemView);
+            view = itemView;
+        }
+
+        public static void setContent(String content) {
+
+            ImageView contentImage = view.findViewById(R.id.iconImage);
+            switch ((content)){
+                case "Transportation":
+                    contentImage.setImageResource(R.drawable.transport_icon);
+                    break;
+
+                case "Fuel":
+                    contentImage.setImageResource(R.drawable.petrol_icon);
+                    break;
+
+                case "Food":
+                    contentImage.setImageResource(R.drawable.food_icon);
+                    break;
+
+                case "Grocery":
+                    contentImage.setImageResource(R.drawable.grocery_icon);
+                    break;
+
+                case "Household":
+                    contentImage.setImageResource(R.drawable.household_icon);
+                    break;
+
+                case "Clothing":
+                    contentImage.setImageResource(R.drawable.clothes_icon);
+                    break;
+
+            }
+        }
+
+        public static void setAmount(String amount) {
+            TextView contentAmount = (TextView) view.findViewById(R.id.contentText);
+            contentAmount.setText(amount);
+
+        }
+    }
+
+
 
     // Start Spinner Method
     public Spinner initSpinner(Spinner s, int content_array) {
@@ -137,6 +224,8 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("database error",db);
             }
         });
+
+
         super.onStart();
     }
 
@@ -257,7 +346,7 @@ public class HomeActivity extends AppCompatActivity {
             mContentSpinner = dialogView.findViewById(R.id.contentSpinner);
             mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
 
-           /* mContentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            mContentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -268,7 +357,7 @@ public class HomeActivity extends AppCompatActivity {
                 public void onNothingSelected(AdapterView<?> parent) {
 
                 }
-            });*/
+            });
 
             builder.setCancelable(true);
             builder.setView(dialogView);
@@ -277,7 +366,7 @@ public class HomeActivity extends AppCompatActivity {
             dialog.show();
 
 
-          /*  mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
+            mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
             mAddTransactionBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -286,7 +375,7 @@ public class HomeActivity extends AppCompatActivity {
                     setDetails();
 
                 }
-            });*/
+            });
 
         }
         return super.onOptionsItemSelected(item);
