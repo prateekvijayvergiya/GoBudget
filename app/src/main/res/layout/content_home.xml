@@ -66,6 +66,7 @@
                 android:layout_height="match_parent"
                android:layout_below="@+id/expenseText"
                 android:background="#fff"
+                android:id="@+id/contentList"
                 android:layout_marginTop="10dp">
             </android.support.v7.widget.RecyclerView>
         </RelativeLayout>

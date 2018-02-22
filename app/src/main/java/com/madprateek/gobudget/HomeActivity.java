@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView mbudgetText,mNavEmail,mNavName;
     private Spinner mContentSpinner;
     DatabaseReference contentDatabase = FirebaseDatabase.getInstance().getReference();
+    RecyclerView contentRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
         mNavEmail = (TextView) findViewById(R.id.navEmail);
         mNavName = (TextView) findViewById(R.id.navName);
         mContentSpinner = (Spinner) findViewById(R.id.contentSpinner);
+        contentRecycler = (RecyclerView) findViewById(R.id.contentList);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,
@@ -133,6 +135,8 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         };
+
+        contentRecycler.setAdapter(adapter);
     }
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
@@ -366,7 +370,7 @@ public class HomeActivity extends AppCompatActivity {
             dialog.show();
 
 
-            mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
+            /*mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
             mAddTransactionBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -375,7 +379,7 @@ public class HomeActivity extends AppCompatActivity {
                     setDetails();
 
                 }
-            });
+            });*/
 
         }
         return super.onOptionsItemSelected(item);
