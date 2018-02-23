@@ -164,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
                     break;
 
                 case "Grocery":
-                    contentImage.setImageResource(R.drawable.grocery_icon);
+                    contentImage.setImageResource(R.drawable.household_icon);
                     break;
 
                 case "Household":
