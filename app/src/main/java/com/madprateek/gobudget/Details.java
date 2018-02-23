@@ -8,6 +8,7 @@ public class Details {
 
     private String image;
 
+
     public String getImage() {
         return image;
     }
@@ -34,7 +35,11 @@ public class Details {
 
     private String name;
     private String date;
-    public Details(String image,String name,String date) {
+
+    public Details() {
+    }
+
+    public Details(String image, String name, String date) {
 
         this.image = image;
         this.image= name;

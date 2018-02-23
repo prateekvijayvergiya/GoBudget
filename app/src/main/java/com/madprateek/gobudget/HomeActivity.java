@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -36,6 +37,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+
 
 import java.util.HashMap;
 
@@ -70,13 +73,12 @@ public class HomeActivity extends AppCompatActivity {
         mSetBudget = (ImageView) findViewById(R.id.setBudgetBtn);
         mProgressDialog = new ProgressDialog(HomeActivity.this);
         mbudgetText = (TextView) findViewById(R.id.budgetText);
-        mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
 
         mNavEmail = (TextView) findViewById(R.id.navEmail);
         mNavName = (TextView) findViewById(R.id.navName);
         mContentSpinner = (Spinner) findViewById(R.id.contentSpinner);
         contentRecycler = (RecyclerView) findViewById(R.id.contentList);
-
+        contentRecycler.setLayoutManager(new LinearLayoutManager(this));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mToogle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
@@ -106,50 +108,48 @@ public class HomeActivity extends AppCompatActivity {
 
     // To set the details by firebase recycler adapter
     private void getDetails() {
+        String uid = mAuth.getCurrentUser().getUid();
 
-        FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,contentDatabase) {
+        DatabaseReference dbref =contentDatabase.child("Users").child(uid).child("Contents");
+        final FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,dbref) {
             @Override
-            protected void populateViewHolder(ContentViewHolder viewHolder, Details model, int position) {
-
-                String uid = mAuth.getCurrentUser().getUid();
-                contentDatabase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        String content = dataSnapshot.child("Contents").getValue().toString();
-                        String money = dataSnapshot.child("Contents").child("Amount").getValue().toString();
+            protected void populateViewHolder(final ContentViewHolder viewHolder, Details model, int position) {
+                         String content =getRef(position).getKey();
                         if (content != null){
-                            ContentViewHolder.setContent(content);
+                            viewHolder.setContent(content);
                         }
+                        getRef(position).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                               String money = dataSnapshot.child("Amount").getValue().toString();
 
-                        ContentViewHolder.setAmount(money);
-                    }
+                               viewHolder.setAmount(money);
+                            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-
-
+                            }
+                        });
             }
         };
 
         contentRecycler.setAdapter(adapter);
+
     }
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
 
-        static View view;
+        public View view;
         public ContentViewHolder(View itemView) {
             super(itemView);
             view = itemView;
         }
 
-        public static void setContent(String content) {
+        public  void setContent(String content) {
 
             ImageView contentImage = view.findViewById(R.id.iconImage);
+
             switch ((content)){
                 case "Transportation":
                     contentImage.setImageResource(R.drawable.transport_icon);
@@ -178,7 +178,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        public static void setAmount(String amount) {
+        public  void setAmount(String amount) {
             TextView contentAmount = (TextView) view.findViewById(R.id.contentText);
             contentAmount.setText(amount);
 
@@ -349,6 +349,11 @@ public class HomeActivity extends AppCompatActivity {
             View dialogView = inflater.inflate(R.layout.custom_transaction_dialog,null);
             mContentSpinner = dialogView.findViewById(R.id.contentSpinner);
             mContentSpinner = initSpinner(mContentSpinner, R.array.content_array);
+            mAddTransactionBtn = dialogView.findViewById(R.id.transactionAddBtn);
+            mRemarksText =(EditText) dialogView.findViewById(R.id.remarksText);
+            mAmountText = (EditText) dialogView.findViewById(R.id.amountText);
+
+
 
             mContentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -359,6 +364,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
+                    content = parent.getSelectedItem().toString();
 
                 }
             });
@@ -370,16 +376,15 @@ public class HomeActivity extends AppCompatActivity {
             dialog.show();
 
 
-            /*mAddTransactionBtn = (Button) findViewById(R.id.transactionAddBtn);
             mAddTransactionBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
-                    setDetails();
-
+                    String amount = mAmountText.getText().toString();
+                    String remarks = mRemarksText.getText().toString();
+                    setDetails(amount,remarks,content);
+                    dialog.dismiss();
                 }
-            });*/
+            });
 
         }
         return super.onOptionsItemSelected(item);
@@ -387,7 +392,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     // for setting the budget contents
-    private void setDetails() {
+    private void setDetails(final String amount, final String remarks,final String content) {
 
 
         mProgressDialog.setTitle("Setting Up Details");
@@ -398,13 +403,9 @@ public class HomeActivity extends AppCompatActivity {
 
 
         budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-        mRemarksText =(EditText) findViewById(R.id.remarksText);
-        mAmountText = (EditText) findViewById(R.id.amountText);
 
+       String uid = mAuth.getCurrentUser().getUid();
 
-        String uid = mAuth.getCurrentUser().getUid();
-        String amount = mAmountText.getText().toString();
-        String remarks = mRemarksText.getText().toString();
 
         HashMap<String,String> contentDetails = new HashMap<String, String>();
         contentDetails.put("Amount",amount);
