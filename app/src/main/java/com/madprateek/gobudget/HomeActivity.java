@@ -206,7 +206,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
 
         String uid = mAuth.getCurrentUser().getUid();
@@ -231,7 +231,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         super.onStart();
-    }
+    }*/
 
     // For Setting the Budget Method
     private void setBudget() {
