@@ -206,7 +206,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override
+    @Override
     protected void onStart() {
 
         String uid = mAuth.getCurrentUser().getUid();
@@ -215,9 +215,12 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                String text = dataSnapshot.child("Budget").getValue().toString();
-                if (text!=null)
-                    mbudgetText.setText("Rs. " + text);
+               if (dataSnapshot.hasChild("Budget")){
+
+                   String text = dataSnapshot.child("Budget").getValue().toString();
+                   if (text!=null)
+                       mbudgetText.setText("Rs. " + text);
+               }
 
             }
 
@@ -231,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         super.onStart();
-    }*/
+    }
 
     // For Setting the Budget Method
     private void setBudget() {

@@ -22,12 +22,11 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/contentText"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="13dp"
             android:clickable="true"
             android:contextClickable="true"
-            android:src="@drawable/close_icon"
-            android:layout_margin="3dp"
-            android:layout_centerVertical="true"/>
+            android:src="@drawable/close_icon" />
 
         <TextView
             android:id="@+id/contentText"
