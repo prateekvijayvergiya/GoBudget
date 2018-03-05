@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -110,11 +111,11 @@ public class HomeActivity extends AppCompatActivity {
     private void getDetails() {
         String uid = mAuth.getCurrentUser().getUid();
 
-        DatabaseReference dbref =contentDatabase.child("Users").child(uid).child("Contents");
+        final DatabaseReference dbref =contentDatabase.child("Users").child(uid).child("Contents");
         final FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,dbref) {
             @Override
             protected void populateViewHolder(final ContentViewHolder viewHolder, Details model, int position) {
-                         String content =getRef(position).getKey();
+                        String content =getRef(position).getKey();
                         if (content != null){
                             viewHolder.setContent(content);
                         }
@@ -131,6 +132,13 @@ public class HomeActivity extends AppCompatActivity {
 
                             }
                         });
+
+                        viewHolder.cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
             }
         };
 
@@ -141,9 +149,12 @@ public class HomeActivity extends AppCompatActivity {
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
 
         public View view;
+        public ImageButton cancel;
+
         public ContentViewHolder(View itemView) {
             super(itemView);
             view = itemView;
+            cancel = view.findViewById(R.id.closeImage);
         }
 
         public  void setContent(String content) {
@@ -215,12 +226,12 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-               if (dataSnapshot.hasChild("Budget")){
+                if (dataSnapshot.hasChild("Budget")){
 
-                   String text = dataSnapshot.child("Budget").getValue().toString();
-                   if (text!=null)
-                       mbudgetText.setText("Rs. " + text);
-               }
+                    String text = dataSnapshot.child("Budget").getValue().toString();
+                    if (text!=null)
+                        mbudgetText.setText("Rs. " + text);
+                }
 
             }
 
