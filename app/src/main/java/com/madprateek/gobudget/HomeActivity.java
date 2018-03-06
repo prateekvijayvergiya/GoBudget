@@ -55,12 +55,14 @@ public class HomeActivity extends AppCompatActivity {
     private Button mAddTransactionBtn;
     private ImageView mSetBudget;
     private EditText mRemarksText,mAmountText;
-    private DatabaseReference budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+    DatabaseReference budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgressDialog;
     private TextView mbudgetText,mNavEmail,mNavName;
     private Spinner mContentSpinner;
-    DatabaseReference contentDatabase = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference contentDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     RecyclerView contentRecycler;
+    DatabaseReference pushDatabase;
+    String mPushId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +112,15 @@ public class HomeActivity extends AppCompatActivity {
     // To set the details by firebase recycler adapter
     private void getDetails() {
         String uid = mAuth.getCurrentUser().getUid();
+        
 
-        final DatabaseReference dbref =contentDatabase.child("Users").child(uid).child("Contents");
+        final DatabaseReference dbref =contentDatabase.child(uid).child(mPushId);
         final FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,dbref) {
             @Override
             protected void populateViewHolder(final ContentViewHolder viewHolder, Details model, int position) {
-                        String content =getRef(position).getKey();
-                        if (content != null){
-                            viewHolder.setContent(content);
+                        String type =getRef(position).getKey();
+                        if (type != null){
+                            viewHolder.setContent(type);
                         }
                         getRef(position).addValueEventListener(new ValueEventListener() {
                             @Override
@@ -157,11 +160,11 @@ public class HomeActivity extends AppCompatActivity {
             cancel = view.findViewById(R.id.closeImage);
         }
 
-        public  void setContent(String content) {
+        public  void setContent(String type) {
 
             ImageView contentImage = view.findViewById(R.id.iconImage);
 
-            switch ((content)){
+            switch ((type)){
                 case "Transportation":
                     contentImage.setImageResource(R.drawable.transport_icon);
                     break;
@@ -414,17 +417,18 @@ public class HomeActivity extends AppCompatActivity {
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
 
-
-
-        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-
         String uid = mAuth.getCurrentUser().getUid();
+
+        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+        pushDatabase = budgetDatabase.push();
+        mPushId = pushDatabase.getKey();
 
 
         HashMap<String,String> contentDetails = new HashMap<String, String>();
+        contentDetails.put("Type",content);
         contentDetails.put("Amount",amount);
         contentDetails.put("Remarks",remarks);
-        budgetDatabase.child(uid).child("Contents").child(content).setValue(contentDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+        pushDatabase.setValue(contentDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
