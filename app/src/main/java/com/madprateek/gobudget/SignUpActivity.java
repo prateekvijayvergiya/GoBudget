@@ -71,10 +71,11 @@ public class SignUpActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-                String uid = currentUser.getUid();
+
                 if (task.isSuccessful()){
 
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                    String uid = currentUser.getUid();
                     HashMap<String,String> userDetails = new HashMap<String,String>();
                     userDetails.put("name",name);
                     userDetails.put("email",email);

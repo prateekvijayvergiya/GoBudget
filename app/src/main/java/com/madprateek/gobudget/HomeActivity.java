@@ -418,7 +418,7 @@ public class HomeActivity extends AppCompatActivity {
 
         budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
-       String uid = mAuth.getCurrentUser().getUid();
+        String uid = mAuth.getCurrentUser().getUid();
 
 
         HashMap<String,String> contentDetails = new HashMap<String, String>();
