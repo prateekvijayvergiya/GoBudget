@@ -112,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
     // To set the details by firebase recycler adapter
     private void getDetails() {
         String uid = mAuth.getCurrentUser().getUid();
-        
+
 
         final DatabaseReference dbref =contentDatabase.child(uid).child(mPushId);
         final FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,dbref) {
