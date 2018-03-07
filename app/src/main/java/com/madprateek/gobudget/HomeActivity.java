@@ -114,20 +114,28 @@ public class HomeActivity extends AppCompatActivity {
         String uid = mAuth.getCurrentUser().getUid();
 
 
-        final DatabaseReference dbref =contentDatabase.child(uid).child(mPushId);
+        final DatabaseReference dbref =contentDatabase.child(uid+"/Transactions");
         final FirebaseRecyclerAdapter<Details,ContentViewHolder> adapter = new FirebaseRecyclerAdapter<Details, ContentViewHolder>(Details.class,R.layout.custom_recycler,ContentViewHolder.class,dbref) {
             @Override
             protected void populateViewHolder(final ContentViewHolder viewHolder, Details model, int position) {
-                        String type =getRef(position).getKey();
-                        if (type != null){
-                            viewHolder.setContent(type);
-                        }
-                        getRef(position).addValueEventListener(new ValueEventListener() {
+                        final String pushId =getRef(position).getKey();
+
+                        dbref.child(pushId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                               String money = dataSnapshot.child("Amount").getValue().toString();
+                                if(dataSnapshot.hasChildren()) {
+                                    String money = dataSnapshot.child("Amount").getValue().toString();
+                                    String type = dataSnapshot.child("Type").getValue().toString();
 
-                               viewHolder.setAmount(money);
+                                    viewHolder.setContent(type);
+                                    viewHolder.setAmount(money);
+                                    viewHolder.cancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dbref.child(pushId).removeValue();
+                                        }
+                                    });
+                                }
                             }
 
                             @Override
@@ -148,6 +156,8 @@ public class HomeActivity extends AppCompatActivity {
         contentRecycler.setAdapter(adapter);
 
     }
+
+
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
 
@@ -419,7 +429,7 @@ public class HomeActivity extends AppCompatActivity {
 
         String uid = mAuth.getCurrentUser().getUid();
 
-        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid+"/Transactions");
         pushDatabase = budgetDatabase.push();
         mPushId = pushDatabase.getKey();
 
