@@ -124,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if(dataSnapshot.hasChildren()) {
-                                    String money = dataSnapshot.child("Amount").getValue().toString();
+                                    final String money = dataSnapshot.child("Amount").getValue().toString();
                                     String type = dataSnapshot.child("Type").getValue().toString();
 
                                     viewHolder.setContent(type);
@@ -133,6 +133,7 @@ public class HomeActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View view) {
                                             dbref.child(pushId).removeValue();
+                                            increaseDatabase(money);
                                         }
                                     });
                                 }
@@ -157,6 +158,29 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void increaseDatabase(final String money) {
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid = currentUser.getUid();
+        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String text = dataSnapshot.child("Budget").getValue().toString();
+                int a = Integer.parseInt(text);
+                int b = Integer.parseInt(money);
+                int c = a+b;
+                budgetDatabase.child("Budget").setValue(Integer.toString(c));
+                mbudgetText.setText(Integer.toString(c));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
@@ -246,6 +270,10 @@ public class HomeActivity extends AppCompatActivity {
                         mbudgetText.setText("Rs. " + text);
                 }
 
+                else{
+                    mbudgetText.setText("Rs.0");
+                }
+
             }
 
             @Override
@@ -276,7 +304,7 @@ public class HomeActivity extends AppCompatActivity {
         setBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String budget = budgetText.getText().toString();
+                final String budget = budgetText.getText().toString();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 String uid = currentUser.getUid();
 
@@ -294,7 +322,7 @@ public class HomeActivity extends AppCompatActivity {
                             dialog.cancel();
                             mProgressDialog.dismiss();
                             Toast.makeText(HomeActivity.this,"Budget added Successfully",Toast.LENGTH_SHORT).show();
-                            updateText();
+                            updateText(budget);
                         }
                     }
                 });
@@ -305,9 +333,10 @@ public class HomeActivity extends AppCompatActivity {
 
 
     // Update Text Method
-   private void updateText() {
+   private void updateText(final String budget) {
 
-       FirebaseUser currentUser = mAuth.getCurrentUser();
+       mbudgetText.setText("Rs. " + budget);
+      /* FirebaseUser currentUser = mAuth.getCurrentUser();
        String uid = currentUser.getUid();
        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
         budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
@@ -316,7 +345,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 String text = dataSnapshot.child("Budget").getValue().toString();
                 if (text!=null)
-                    mbudgetText.setText("Rs. " + text);
+                    mbudgetText.setText("Rs. " + budget);
 
             }
 
@@ -326,7 +355,7 @@ public class HomeActivity extends AppCompatActivity {
                 String db = databaseError.getMessage();
                 Log.d("database error",db);
             }
-        });
+        });*/
    }
 
     //Set Drawer Method
@@ -438,6 +467,7 @@ public class HomeActivity extends AppCompatActivity {
         contentDetails.put("Type",content);
         contentDetails.put("Amount",amount);
         contentDetails.put("Remarks",remarks);
+
         pushDatabase.setValue(contentDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -447,6 +477,36 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+
+        decreaseDatabase(amount);
+    }
+
+    private void decreaseDatabase(final String amount) {
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid = currentUser.getUid();
+        budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String text = dataSnapshot.child("Budget").getValue().toString();
+                int a = Integer.parseInt(text);
+                int b = Integer.parseInt(amount);
+                int c = a-b;
+                budgetDatabase.child("Budget").setValue(Integer.toString(c));
+                mbudgetText.setText(Integer.toString(c));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+
+
     }
 
     @Override
