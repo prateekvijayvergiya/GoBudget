@@ -490,20 +490,25 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                String text = dataSnapshot.child("Budget").getValue().toString();
-                int a = Integer.parseInt(text);
+                String rawBudget = dataSnapshot.child("Budget").getValue().toString();
+                int a = Integer.parseInt(rawBudget);
                 int b = Integer.parseInt(amount);
                 int c = a-b;
-                budgetDatabase.child("Budget").setValue(Integer.toString(c));
+
+                budgetDatabase.child("budget").setValue(Integer.toString(c));
                 mbudgetText.setText(Integer.toString(c));
+
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
 
+
         });
+
 
 
 
