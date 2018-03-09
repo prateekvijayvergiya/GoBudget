@@ -161,18 +161,17 @@ public class HomeActivity extends AppCompatActivity {
     private void increaseDatabase(final String money) {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String uid = currentUser.getUid();
+        final String uid = currentUser.getUid();
         budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-        budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+        budgetDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                String text = dataSnapshot.child("Budget").getValue().toString();
-                int a = Integer.parseInt(text);
+                String rawBudget = dataSnapshot.child("Budget").getValue().toString();
+                int a = Integer.parseInt(rawBudget);
                 int b = Integer.parseInt(money);
                 int c = a+b;
-                budgetDatabase.child("Budget").setValue(Integer.toString(c));
-                mbudgetText.setText(Integer.toString(c));
+
+                budgetDatabase.child(uid+"/Budget").setValue(Integer.toString(c));
             }
 
             @Override
@@ -180,6 +179,8 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
 
@@ -484,29 +485,23 @@ public class HomeActivity extends AppCompatActivity {
     private void decreaseDatabase(final String amount) {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String uid = currentUser.getUid();
+        final String uid = currentUser.getUid();
         budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-        budgetDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+        budgetDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 String rawBudget = dataSnapshot.child("Budget").getValue().toString();
                 int a = Integer.parseInt(rawBudget);
                 int b = Integer.parseInt(amount);
                 int c = a-b;
 
-                budgetDatabase.child("budget").setValue(Integer.toString(c));
-                mbudgetText.setText(Integer.toString(c));
-
+                budgetDatabase.child(uid+"/Budget").setValue(Integer.toString(c));
             }
-
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-
-
         });
 
 
