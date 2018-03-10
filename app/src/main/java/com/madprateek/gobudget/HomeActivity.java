@@ -107,6 +107,9 @@ public class HomeActivity extends AppCompatActivity {
 
         getDetails();
 
+
+
+
     }
 
     // To set the details by firebase recycler adapter
@@ -390,6 +393,31 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+
+        View v = navigationView.getHeaderView(0);
+        mNavName = v.findViewById(R.id.navName);
+        mNavEmail = v.findViewById(R.id.navEmail);
+
+        String uid = mAuth.getCurrentUser().getUid();
+
+        contentDatabase = FirebaseDatabase.getInstance().getReference();
+        contentDatabase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String name = dataSnapshot.child("name").getValue().toString();
+                String email = dataSnapshot.child("email").getValue().toString();
+                mNavEmail.setText(email);
+                mNavName.setText(name);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     // For selecting the options from app bar
