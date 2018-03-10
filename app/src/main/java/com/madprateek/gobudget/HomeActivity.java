@@ -39,8 +39,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -122,6 +122,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(final ContentViewHolder viewHolder, Details model, int position) {
                         final String pushId =getRef(position).getKey();
+                        viewHolder.setDate();
 
                         dbref.child(pushId).addValueEventListener(new ValueEventListener() {
                             @Override
@@ -228,6 +229,17 @@ public class HomeActivity extends AppCompatActivity {
                     break;
 
             }
+        }
+
+        public void setDate(){
+
+            TextView dateView = (TextView) view.findViewById(R.id.dateText);
+            Calendar c = Calendar.getInstance();
+
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String date = df.format(c.getTime());
+            dateView.setText(date);
+
         }
 
         public  void setAmount(String amount) {
@@ -401,8 +413,8 @@ public class HomeActivity extends AppCompatActivity {
 
         String uid = mAuth.getCurrentUser().getUid();
 
-        contentDatabase = FirebaseDatabase.getInstance().getReference();
-        contentDatabase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
+        DatabaseReference db = contentDatabase.child(uid);
+        db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

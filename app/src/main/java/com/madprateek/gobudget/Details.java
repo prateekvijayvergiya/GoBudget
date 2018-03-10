@@ -8,7 +8,6 @@ public class Details {
 
     private String image;
 
-
     public String getImage() {
         return image;
     }

@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mSignInBtn,mSignUpBtn;
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         mSignInBtn = (Button) findViewById(R.id.mainSignInBtn);
         mSignUpBtn = (Button) findViewById(R.id.mainSignUpBtn);
+
 
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(signInIntent);
             }
         });
+
+
     }
 
     @Override

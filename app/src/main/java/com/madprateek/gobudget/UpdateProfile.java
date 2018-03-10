@@ -91,10 +91,7 @@ public class UpdateProfile extends AppCompatActivity {
                     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(uid);
 
                     String name = mName.getText().toString();
-                    String email = mEmail.getText().toString();
 
-                    mNavEmail.setText(email);
-                    mNavName.setText(name);
                     Map info = new HashMap();
                     info.put("name",name);
                     mDatabase.updateChildren(info, new DatabaseReference.CompletionListener() {

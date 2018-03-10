@@ -16,7 +16,9 @@
         android:textAlignment="center"
         android:layout_marginTop="100dp"
         android:textSize="40dp"
+        android:visibility="visible"
         android:textStyle="bold"
+        android:id="@+id/newText1"
         android:textColor="#000000"
         tools:text="GoBudget"
         android:fontFamily="cursive"/>
