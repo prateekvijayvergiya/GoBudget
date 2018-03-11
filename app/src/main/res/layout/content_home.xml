@@ -15,7 +15,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:background="#EC407A"
+                android:background="#E1F5FE"
                 android:orientation="vertical"
                 android:id="@+id/contentHead">
 
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/add_budget_icon"
-                    android:background="#EC407A"
+                    android:background="#E1F5FE"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="60dp"
                     android:clickable="true"
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                android:layout_below="@+id/expenseText"
-                android:background="#FF8F00"
+                android:background="#FFFFFF"
                 android:id="@+id/contentList"
                 android:layout_marginTop="10dp">
             </android.support.v7.widget.RecyclerView>

@@ -244,8 +244,7 @@ public class HomeActivity extends AppCompatActivity {
 
         public  void setAmount(String amount) {
             TextView contentAmount = (TextView) view.findViewById(R.id.contentText);
-            contentAmount.setText(amount);
-
+            contentAmount.setText("Rs. " + amount);
         }
     }
 
@@ -478,8 +477,18 @@ public class HomeActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     String amount = mAmountText.getText().toString();
                     String remarks = mRemarksText.getText().toString();
-                    setDetails(amount,remarks,content);
-                    dialog.dismiss();
+
+                    if (amount != null && remarks != null){
+
+                        setDetails(amount,remarks,content);
+                        dialog.dismiss();
+                    }
+
+                    else{
+                        dialog.dismiss();
+                        Toast.makeText(HomeActivity.this,"Please Enter Amount",Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
 
@@ -527,24 +536,31 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         final String uid = currentUser.getUid();
         budgetDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-        budgetDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String rawBudget = dataSnapshot.child("Budget").getValue().toString();
-                int a = Integer.parseInt(rawBudget);
-                int b = Integer.parseInt(amount);
-                int c = a-b;
 
-                budgetDatabase.child(uid+"/Budget").setValue(Integer.toString(c));
-            }
+        if (amount != null){
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            budgetDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String rawBudget = dataSnapshot.child("Budget").getValue().toString();
+                    int a = Integer.parseInt(rawBudget);
+                    int b = Integer.parseInt(amount);
+                    int c = a-b;
 
-            }
-        });
+                    budgetDatabase.child(uid+"/Budget").setValue(Integer.toString(c));
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
+                }
+            });
+
+        }
+
+        else{
+            Toast.makeText(HomeActivity.this,"Please Enter Amount",Toast.LENGTH_LONG).show();
+        }
 
 
     }

@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:text="Set Your Budget"
         android:textSize="20dp"
+        android:textStyle="bold"
         android:id="@+id/dialogText"/>
 
     <EditText
@@ -29,5 +30,6 @@
         android:layout_gravity="center|center_horizontal"
         android:layout_marginTop="25dp"
         android:gravity="center"
+        android:backgroundTint="@color/colorAccent"
         android:text="Set" />
 </RelativeLayout>
