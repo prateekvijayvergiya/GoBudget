@@ -1,5 +1,6 @@
 package com.madprateek.gobudget;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -73,6 +74,13 @@ public class UpdateProfile extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu,menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(UpdateProfile.this,HomeActivity.class);
+        startActivity(backIntent);
+        super.onBackPressed();
     }
 
     @Override
